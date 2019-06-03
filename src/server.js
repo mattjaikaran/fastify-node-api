@@ -2,10 +2,18 @@ const fastify = require('fastify')({ logger: true })
 const mongoose = require('mongoose')
 const routes = require('./routes')
 const swagger = require('./config/swagger')
+const gql = require('fastify-gql')
+const schema = require('./schema')
+
+const db = process.env.mongoURI 
 
 fastify.register(require('fastify-swagger'), swagger.options)
 
-const db = process.env.mongoURI
+fastify.register(gql, {
+  schema,
+  graphiql: true
+})
+
 mongoose.connect(db, { useNewUrlParser: true })
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.log(err))
